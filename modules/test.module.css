@@ -1,8 +1,141 @@
-.container{
-    background-color: aliceblue;
-    height: 80vh;
-    width: 50%;
-    margin: auto;
-    line-height: 1.5;
-    margin-bottom: 10px;
+.container {
+    background-color: #f8fafc;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 16px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.task_form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.task_form_title,
+.task_form_priority {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.task_form input,
+.task_form select {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.task_form_buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.task_form button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+}
+
+.task_form_buttons_submit {
+    background-color: #2563eb;
+}
+
+.task_form_buttons_cancel {
+    background-color: #6b7280;
+}
+
+.error {
+    color: red;
+    font-size: 13px;
+}
+
+.tasks {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.tasks_search,
+.task_filter {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tasks input,
+.task_filter select {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.task_item {
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.completed {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.task_item p {
+    font-weight: 500;
+}
+
+.task_status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tasks_buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.tasks_buttons button {
+    flex: 1;
+    padding: 6px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.tasks_buttons_delete {
+    background-color: #ef4444;
+    color: white;
+}
+
+.tasks_buttons_edit {
+    background-color: #10b981;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 12px;
+    }
+
+    .task_form_buttons {
+        flex-direction: column;
+    }
+
+    .tasks_buttons {
+        flex-direction: column;
+    }
 }

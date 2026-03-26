@@ -3,6 +3,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import styles from './test.module.css';
 
 // Your Test Starts Here
+// Enums are used to make sure that only specified values allowed for fields
 enum PriorityType {
     low = "Low",
     medium = "Medium",
@@ -12,6 +13,7 @@ enum Status {
     completed = "Completed",
     active = "Active"
 }
+// I was thinking about adding id field, but because you didn't mention it in requirements, I just used index in .map()
 type Task = {
     title: string,
     priority: PriorityType,
@@ -43,6 +45,7 @@ export default function TaskManager(): JSX.Element {
             }
         }
     }, []);
+
     useEffect(() => {
         localStorage.setItem("tasks", JSON.stringify(tasks));
     }, [tasks]);
@@ -79,7 +82,7 @@ export default function TaskManager(): JSX.Element {
         setTitle(task.title);
         setPriority(task.priority);
     }
-
+    // Single submit function for both create and edit(depending on isEdit variable's value it either updates an existing one or creates a new one)
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (title.trim() === "") {
@@ -120,21 +123,22 @@ export default function TaskManager(): JSX.Element {
 
     // Display Tasks handling(filter and search)
     const handleFilter = useCallback(
-        (e: React.ChangeEvent<HTMLSelectElement>) => setFilter(e.target.value as Status), []);
+        (e: React.ChangeEvent<HTMLSelectElement>) => setFilter(e.target.value as "all" | Status), []);
 
     const handleSearch = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value), []);
 
     return (
         <div className={styles.container}>
-            <form className='task_form' onSubmit={handleSubmit}>
+            {/*Singe Form for both Create and Edit*/}
+            <form className={styles.task_form} onSubmit={handleSubmit}>
                 <h4>{isEdit ? "Edit" : "Create"} Form</h4>
-                {error && (<p>{error}</p>)}
-                <div className='task_form_title'>
+                {error && (<h5 className={styles.error}>{error}</h5>)}
+                <div className={styles.task_form_title}>
                     <label htmlFor='title'>Title</label>
-                    <input type='text' name='title' id='title' value={title} onChange={handleTitle} />
+                    <input type='text' name='title' id='title' value={title} onChange={handleTitle} required />
                 </div>
-                <div className='task_form_priority'>
+                <div className={styles.task_form_priority}>
                     <label htmlFor='priority'>Priority</label>
                     <select name='priority' id='priority' value={priority} onChange={handlePriority}>
                         <option value={PriorityType.low}>Low</option>
@@ -142,19 +146,19 @@ export default function TaskManager(): JSX.Element {
                         <option value={PriorityType.high}>High</option>
                     </select>
                 </div>
-                <div className='task_form_buttons'>
-                    <button type='submit'>{isEdit ? "Save" : "Add task"}</button>
-                    <button type='button' onClick={handleCancel}>Cancel</button>
+                <div className={styles.task_form_buttons}>
+                    <button className={styles.task_form_buttons_submit} type='submit'>{isEdit ? "Save" : "Add task"}</button>
+                    <button className={styles.task_form_buttons_cancel} type='button' onClick={handleCancel}>Cancel</button>
                 </div>
             </form>
 
-            <div className='tasks'>
-                <h4>Tasks:</h4>
-                <div className='tasks_search'>
-                    <label htmlFor="search">Search:</label>
+            <div className={styles.tasks}>
+                <h4 className={styles.tasks_header}>Tasks</h4>
+                <div className={styles.tasks_search}>
+                    <label htmlFor="search">Search</label>
                     <input type="text" name="search" id="search" value={search} onChange={handleSearch} />
                 </div>
-                <div className='task_filter'>
+                <div className={styles.task_filter}>
                     <label htmlFor='filter'>Filter</label>
                     <select name='filter' id='filter' value={filter} onChange={handleFilter}>
                         <option value={"all"}>All</option>
@@ -162,6 +166,14 @@ export default function TaskManager(): JSX.Element {
                         <option value={Status.completed}>Completed</option>
                     </select>
                 </div>
+                {/*Empty state for tasks*/}
+                {tasks.length === 0 && <h5>No tasks yet</h5>}
+                {/*
+                    Takes all tasks, filters them by their status, 
+                    applies search requirements, 
+                    sort them by their completeness status, 
+                    and in the end displays tasks
+                */}
                 {tasks
                     .map((task, index) => ({ task, index }))
                     .filter(({ task }) =>
@@ -175,15 +187,16 @@ export default function TaskManager(): JSX.Element {
                         return a.task.status === Status.active ? -1 : 1;
                     })
                     .map(({ task, index }) => (
-                        <div key={index}>
-                            <p>{task.title} {task.priority}</p>
-                            <div>
-                                <label htmlFor="status">Status: </label>
-                                <input type="checkbox" name="status" id="status" onChange={() => handleCheck(index)} checked={task.status === Status.completed} />
+                        <div className={styles.task_item} key={index}>
+                            <p className={task.status === Status.completed ? styles.completed : ""}>Title: {task.title}</p>
+                            <p>Priority: {task.priority}</p>
+                            <div className={styles.task_status}>
+                                <label htmlFor={`status-${index}`}>Status: </label>
+                                <input type="checkbox" name={`status-${index}`} id={`status-${index}`} onChange={() => handleCheck(index)} checked={task.status === Status.completed} aria-label="Mark task as completed" />
                             </div>
-                            <div className='tasks_buttons'>
-                                <button onClick={() => handleDelete(index)}>Delete</button>
-                                <button onClick={() => handleIsEdit(task, index)}>Edit</button>
+                            <div className={styles.tasks_buttons}>
+                                <button type='button' className={styles.tasks_buttons_delete} onClick={() => handleDelete(index)}>Delete</button>
+                                <button type='button' className={styles.tasks_buttons_edit} onClick={() => handleIsEdit(task, index)}>Edit</button>
                             </div>
                         </div>
                     ))}
