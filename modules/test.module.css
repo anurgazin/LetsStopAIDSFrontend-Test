@@ -1,4 +1,8 @@
 .container{
-    height: 80vh;
     background-color: aliceblue;
+    height: 80vh;
+    width: 50%;
+    margin: auto;
+    line-height: 1.5;
+    margin-bottom: 10px;
 }
